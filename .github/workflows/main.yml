@@ -23,9 +23,14 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: Integration Testing ( Install BAT CLI)
-        run: curl -o- 'https://s3.amazonaws.com/bat-wrapper/install.sh' | bash && echo Integration Testing Complete
-        
+      - name: Install BAT CLI
+        run: |
+          mkdir -p "$HOME/.bat"
+          curl -fL "https://repository-master.mulesoft.org/nexus/content/repositories/releases/com/mulesoft/bat/bat-wrapper/1.1.14/bat-wrapper-1.1.14.zip" -o /tmp/bat-wrapper.zip
+          unzip -o /tmp/bat-wrapper.zip -d "$HOME/.bat"
+          chmod +x "$HOME/.bat/bat/bin/bat"
+          echo "$HOME/.bat/bat/bin" >> "$GITHUB_PATH"
+
       - name: Running Integration Tests
         run: bat bat.dwl
 
